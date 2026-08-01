@@ -60,7 +60,9 @@ function header_field() {
 
 magic_number=$(header_field 'Magic:')
 class=$(header_field '^[[:space:]]*Class:')
-byte_order=$(header_field '^[[:space:]]*Data:')
+# readelf reports Data as "2's complement, little endian"; only the
+# endianness itself is wanted, so drop everything up to the last comma.
+byte_order=$(header_field '^[[:space:]]*Data:' | sed 's/.*,[[:space:]]*//')
 entry_point_address=$(header_field 'Entry point address:')
 
 # 5. Hand everything to the shared formatter.
